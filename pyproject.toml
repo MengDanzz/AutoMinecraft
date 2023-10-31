@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "auto-mc"
+name = "mc"
 version = "0.1.0"
 description = "Automatic Minecraft"
 authors = ["Mengdan <17638547327@163.com>"]
