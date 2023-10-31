@@ -7,6 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+click = "^8.1.7"
 
 
 [build-system]
@@ -14,4 +15,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-csdb = "mc.console:mc"
+automc = "mc.console:mc"
