@@ -34,33 +34,33 @@ def restore():
     operations.chest_restore()
 
 
-def get_command_tree(command):
-    if isinstance(command, click.Group):
-        command_dict = {"name": command.name, "help": command.help, "subcommands": {}}
-        # flake8 noqa
-        for subcommand_name, subcommand in command.commands.items():
-            command_dict["subcommands"][subcommand_name] = get_command_tree(subcommand)
-        return command_dict
-    elif isinstance(command, click.Command):
-        return {"name": command.name, "help": command.help}
+@mc.group()
+def system():
+    pass
 
 
-@mc.command
-@click.argument("prev", required=False)
-@click.argument("cur", required=False)
-def autocomp(prev: str, cur: str):
-    # auto complete
-    cmd_tree = get_command_tree(mc)
-    prevs = prev.strip().split(" ")[1:]  # first item is mc
-    cmd_cursor = cmd_tree
-
-    for cmd in prevs:
-        cmd_cursor = cmd_cursor["subcommands"][cmd]
-    if "subcommands" in cmd_cursor:
-        click.echo("\n".join([cmd for cmd in cmd_cursor["subcommands"]]))
+@system.command()
+@click.option("--key")
+@click.option("--duration", type=int)
+def hold(key: str, duration: int):
+    if key.startswith("r"):
+        operations.hold("right", duration)
     else:
-        pass
+        operations.hold("left", duration)
 
 
-if __name__ == "__main__":
-    print("aumc")
+@mc.command()
+@click.argument("steps", type=int)
+def go_up(steps):
+    operations.go_up(steps)
+
+
+@mc.command()
+@click.argument("row", type=int)
+def transaction(row):
+    operations.transaction(row)
+
+
+@system.command()
+def screenshot():
+    operations.screen_shot()

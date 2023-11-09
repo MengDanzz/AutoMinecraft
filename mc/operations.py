@@ -1,5 +1,7 @@
+import datetime
+import logging
+import os.path
 from typing import Tuple
-
 from mc import window
 import functools
 import pyautogui
@@ -32,6 +34,23 @@ def dig_stone():
         pyautogui.scroll(-1)
 
 
+@mc_executor
+def transaction(row: int):
+    X = 605
+    FIRST_Y = 293
+    ROW_HEIGHT = 78.67
+
+    pyautogui.rightClick()
+    if row > 7:
+        pyautogui.scroll(-2)
+        row = row - 2
+
+    with pyautogui.hold("shift"):
+        for i in range(15):
+            pyautogui.click(X, FIRST_Y + (row - 1) * ROW_HEIGHT)
+            pyautogui.click(1308, 367)
+
+
 CHEST_ROWS = 3
 CHEST_COLS = 9
 PACK_ROWS = 3
@@ -59,8 +78,32 @@ def chest_store():
 
 
 @mc_executor
+def go_up(steps: int):
+    with pyautogui.hold("space"):
+        for _ in range(steps):
+            pyautogui.click(button="right")
+            sleep(0.35)
+            pyautogui.keyDown("space")
+
+
+@mc_executor
+def hold(key: str, duration):
+    pyautogui.mouseDown(button=key)
+    sleep(duration)
+    pyautogui.mouseUp(button=key)
+
+
+@mc_executor
 def chest_restore():
     pyautogui.rightClick()
     with pyautogui.hold("shift"):
         for x, y in product(range(PACK_COLS), range(PACK_ROWS)):
             pyautogui.click(*get_pos_in_chest(x, y))
+
+
+@mc_executor
+def screen_shot():
+    img = pyautogui.screenshot()
+    save_path = os.path.join("/tmp/", str(datetime.datetime.now().timestamp()) + ".png")
+    img.save(save_path)
+    logging.info(f"save to {save_path}")
